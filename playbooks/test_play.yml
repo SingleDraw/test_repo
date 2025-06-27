@@ -16,9 +16,9 @@
       set_fact:
         host_publickey_path: "{{ ansible_ssh_public_key_file | default('~/.ssh/id_rsa.pub', true) }}"
 
-    - name: Skip play if ansible_ssh_pass is not set or authorized_keys already contains the public key
-      include_role:
-        name: is_pubkey_set
+    # - name: Skip play if ansible_ssh_pass is not set or authorized_keys already contains the public key
+    #   include_role:
+    #     name: is_pubkey_set
 
   tasks:
     - name: Test shell 
