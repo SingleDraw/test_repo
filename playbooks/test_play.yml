@@ -1,0 +1,31 @@
+
+# -------------------------------------------------------------------------------
+# Stage 1: Initial setup and SSH key configuration
+# -------------------------------------------------------------------------------
+- hosts: vps
+  gather_facts: false
+  serial: 1
+  vars:
+    ansible_ssh_common_args: >-
+      -o PreferredAuthentications=password 
+      -o PubkeyAuthentication=no
+      -o PasswordAuthentication=yes
+
+  pre_tasks:
+    - name: Set local public key path (fallback to ~/.ssh/id_rsa.pub)
+      set_fact:
+        host_publickey_path: "{{ ansible_ssh_public_key_file | default('~/.ssh/id_rsa.pub', true) }}"
+
+    - name: Skip play if ansible_ssh_pass is not set or authorized_keys already contains the public key
+      include_role:
+        name: is_pubkey_set
+
+  tasks:
+    - name: Test shell 
+      ansible.builtin.shell: echo "Hello, this is a test shell command."
+      register: shell_output
+
+    - name: Display shell output
+      ansible.builtin.debug:
+        msg: "Shell output: {{ shell_output.stdout }}"
+
