@@ -4,7 +4,7 @@ import os
 import json
 import sys
 from dotenv import load_dotenv
-load_dotenv('/ansible/.env')
+load_dotenv('/ansible/.hosts.env')
 
 mimi_host =  os.getenv('mimi_HOST', '')
 mimi_user =  os.getenv('mimi_USER', '')
