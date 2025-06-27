@@ -1,0 +1,34 @@
+
+# Skip if ansible_ssh_pass is not set or if its present in authorized_keys of the target host
+# This is to ensure that the playbook only runs if password-based authentication is required
+# to set up SSH keys for the first time.
+
+- name: Skip play if ansible_ssh_pass is not provided
+  ansible.builtin.meta: end_play
+  when: ansible_ssh_pass is not defined or ansible_ssh_pass == ''
+
+- name: Ensure public key file exists on the controller (runner)
+  stat:
+    path: "{{ host_publickey_path }}"
+  delegate_to: localhost
+  register: pubkey_file
+
+- name: Fail if public key file does not exist
+  fail:
+    msg: "Public key '{{ host_publickey_path }}' not found on the controller. Cannot continue key check or setup."
+  when: not pubkey_file.stat.exists
+
+- name: Check if authorized_keys already contains the public key
+  # CAUTTION: This task assumes lookup file in runner's home directory
+  # but compares it with the file in target host's ~/.ssh/authorized_keys
+  shell: |
+    grep "{{ lookup('file', host_publickey_path) | trim }}" ~/.ssh/authorized_keys
+  when: pubkey_file.stat.exists
+  register: pubkey_check
+  failed_when: false
+  changed_when: false
+
+- name: Skip host if SSH key is already present
+  ansible.builtin.meta: end_host
+  when: 
+    - pubkey_check.rc == 0
