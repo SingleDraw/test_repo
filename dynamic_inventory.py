@@ -11,6 +11,11 @@ mimi_user =  os.getenv('mimi_USER', '')
 mimi_port = int(os.getenv('mimi_PORT', 22))
 mimi_password = os.getenv('mimi_PASS', '')
 
+"""
+Dynamic Ansible Inventory Script
+This script generates a dynamic inventory for Ansible, allowing it to manage hosts dynamically.
+"""
+
 def get_inventory():
     """
     Return dynamic inventory data
