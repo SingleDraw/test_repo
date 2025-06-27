@@ -21,6 +21,10 @@
     #     name: is_pubkey_set
 
   tasks:
+    - name: Display 'MY_SSH_KEY'
+      ansible.builtin.debug:
+        msg: "MY_SSH_KEY: {{ lookup('env', 'MY_SSH_KEY') | default('not set') }}"
+
     - name: Display ansible host variables
       ansible.builtin.debug:
         msg: "Ansible host variables like ansible_ssh_pass: {{ ansible_ssh_pass | default('not set') }}, ansible user: {{ ansible_user | default('not set') }}"
