@@ -21,6 +21,10 @@
     #     name: is_pubkey_set
 
   tasks:
+    - name: Display ansible host variables
+      ansible.builtin.debug:
+        msg: "Ansible host variables like ansible_ssh_pass: {{ ansible_ssh_pass | default('not set') }}, ansible user: {{ ansible_user | default('not set') }}"
+
     - name: Test shell 
       ansible.builtin.shell: echo "Hello, this is a test shell command."
       register: shell_output
